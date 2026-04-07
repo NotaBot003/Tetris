@@ -45,11 +45,12 @@ public class Tetris {
     public static boolean rightAllowed = true;
     public static boolean upAllowed = true;
     public static boolean downAllowed = true;
+    public static boolean RAllowed = true;
 
     // Create global variables HERE
     
     public static int squareSize;
-    public static char[][] grid = new char[21][12];
+    public static char[][] grid = new char[22][12];
 
     // piece queue
 
@@ -93,6 +94,8 @@ public class Tetris {
                 if (code == KeyEvent.VK_DOWN)  onDownPressed();
                 if (code == KeyEvent.VK_ENTER) onEnterPressed();
                 if (code == KeyEvent.VK_Q)     onQPressed();
+                if (code == KeyEvent.VK_R)     onRPressed();
+                if (code == KeyEvent.VK_SPACE) onSpacePressed();
             }
 
             @Override
@@ -103,6 +106,7 @@ public class Tetris {
                 if (code == KeyEvent.VK_RIGHT) onRightReleased();
                 if (code == KeyEvent.VK_UP)    onUpReleased();
                 if (code == KeyEvent.VK_DOWN)  onDownReleased();
+                if (code == KeyEvent.VK_R)     onRReleased();
             }
         });
 
@@ -124,6 +128,10 @@ public class Tetris {
 
     public static void onDownReleased() {
         downAllowed  = true;
+    }
+
+    public static void onRReleased() {
+        RAllowed = true;
     }
 
     public static void initBufferStrategy() {
@@ -159,9 +167,9 @@ public class Tetris {
 
     // you may add helper methods below
     public static void initDefaultGrid() {
-        for (int i = 0; i < 21; i++) {
+        for (int i = 0; i < 22; i++) {
             for (int j = 0; j < 12; j++) {
-                if (j == 0 || j == 11) {
+                if (j == 0 || j == 11 || i == 21) {
                     grid[i][j] = 'n';
                 } else {
                     grid[i][j] = 'b';
@@ -269,12 +277,28 @@ public class Tetris {
     }
 
     public static void onUpPressed() {
+        if (upAllowed) {
+            piece.rotateClockwise(grid);
+        }
+        upAllowed = false;
     }
 
     public static void onDownPressed() {
         if (downAllowed) {
             piece.rotateClockwise(grid);
         }
+        downAllowed = false;
+    }
+
+    public static void onRPressed() {
+        if (RAllowed) {
+            piece.rotate180(grid);
+        }
+        RAllowed = false;
+    }
+
+    public static void onSpacePressed() {
+        movement("HD");
     }
 
     public static void onEnterPressed() {
@@ -288,11 +312,15 @@ public class Tetris {
             grid = piece.moveLeft(grid);
         } else if (direction.equals("right")) {
             grid = piece.moveRight(grid);
+        } else if (direction.equals("HD")) {
+            grid = piece.hardDrop(grid);
         }
-        // for (int i = 0; i < 12; i++) {
-        //     System.out.print(grid[1][i]);
-        // }
-        // System.out.println();
+        for (int i = 0; i < 22; i++) {
+            for (int j = 0; j < 12; j++) {
+                System.out.print(grid[i][j]);
+            }   
+            System.out.println("here");
+        }
     }
 
 ///////////////////////////// GAME CLEAN UP //////////////////////////

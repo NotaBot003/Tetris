@@ -11,13 +11,12 @@ abstract class Block {
         return y;
     }
     
-    abstract void moveDown();
+    abstract char[][] moveDown(char[][] grid);
     abstract char[][] moveLeft(char[][] grid);
     abstract char[][] moveRight(char[][] grid);
-    abstract void softDrop();
-    abstract void hardDrop();
+    abstract char[][] hardDrop(char[][] grid);
     abstract char[][] rotateClockwise(char[][] grid);
-    abstract void rotateCounterClockwise();
-    abstract void rotate180();
+    abstract char[][] rotateCounterClockwise(char[][] grid);
+    abstract char[][] rotate180(char[][] grid);
     abstract char[][] getGrid(char[][] grid);
 }
