@@ -1,5 +1,5 @@
-public class TPiece extends Block {
-    
+public class JPiece extends Block {
+        
     @Override
     public char[][] getGrid(char[][] grid) {
         grid = drawErase(grid, true);
@@ -44,17 +44,30 @@ public class TPiece extends Block {
         return grid;
     }
 
+    private boolean inRotationBounds(int r, char[][] grid) {
+        if (r == 90 && grid[y + 1][x] == 'b' && grid[y - 1][x + 1] == 'b' && grid[y - 1][x] == 'b') {
+            return true;
+        } else if (r == 180 && grid[y][x - 1] == 'b' && grid[y][x + 1] == 'b' && grid[y + 1][x + 1] == 'b') {
+            return true;
+        } else if (r == 270 && grid[y - 1][x] == 'b' && grid[y + 1][x] == 'b' && grid[y + 1][x - 1] == 'b') {
+            return true;
+        } else if (r == 0 && grid[y][x + 1] == 'b' && grid[y][x - 1] == 'b' && grid[y - 1][x - 1] == 'b') {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public char[][] rotateClockwise(char[][] grid) {
         grid = drawErase(grid, false);
         
-        if (rotation == 0 && grid[y + 1][x] == 'b') {
+        if (rotation == 0 && inRotationBounds(90, grid)) {
             rotation = 90;
-        } else if (rotation == 90 && grid[y][x - 1] == 'b') {
+        } else if (rotation == 90 && inRotationBounds(180, grid)) {
             rotation = 180;
-        } else if (rotation == 180 && grid[y - 1][x] == 'b') {
+        } else if (rotation == 180 && inRotationBounds(270, grid)) {
             rotation = 270;
-        } else if (rotation == 270 && grid[y][x + 1] == 'b') {
+        } else if (rotation == 270 && inRotationBounds(0, grid)) {
             rotation = 0;
         }
         
@@ -66,13 +79,13 @@ public class TPiece extends Block {
     public char[][] rotateCounterClockwise(char[][] grid) {
         grid = drawErase(grid, false);
         
-        if (rotation == 180 && grid[y - 1][x] == 'b') {
-            rotation = 90;  
-        } else if (rotation == 270 && grid[y][x + 1] == 'b') {
+        if (rotation == 180 && inRotationBounds(90, grid)) {
+            rotation = 90;
+        } else if (rotation == 270 && inRotationBounds(180, grid)) {
             rotation = 180;
-        } else if (rotation == 0 && grid[y + 1][x] == 'b') {
+        } else if (rotation == 0 && inRotationBounds(270, grid)) {
             rotation = 270;
-        } else if (rotation == 90 && grid[y][x - 1] == 'b') {
+        } else if (rotation == 90 && inRotationBounds(0, grid)) {
             rotation = 0;
         }
         
@@ -84,13 +97,13 @@ public class TPiece extends Block {
     public char[][] rotate180(char[][] grid) {
         grid = drawErase(grid, false);
         
-        if (rotation == 270 && grid[y][x + 1] == 'b') {
+        if (rotation == 270 && inRotationBounds(90, grid)) {
             rotation = 90;
-        } else if (rotation == 0 && grid[y + 1][x] == 'b') {
+        } else if (rotation == 0 && inRotationBounds(180, grid)) {
             rotation = 180;
-        } else if (rotation == 90 && grid[y][x - 1] == 'b') {
+        } else if (rotation == 90 && inRotationBounds(270, grid)) {
             rotation = 270;
-        } else if (rotation == 180 && grid[y - 1][x] == 'b') {
+        } else if (rotation == 180 && inRotationBounds(0, grid)) {
             rotation = 0;
         }
         
@@ -104,33 +117,33 @@ public class TPiece extends Block {
 
         if (rotation == 0 
             && grid[y][x] == 'b'
-            && grid[y - 1][x] == 'b'
-            && grid[y][x - 1] == 'b'
-            && grid[y][x + 1] == 'b') {
+            && grid[y][x - 1]     == 'b'
+            && grid[y][x + 1]     == 'b'
+            && grid[y - 1][x - 1] == 'b') {
             x -= dirX;
             y -= dirY;
             return true;
         } else if (rotation == 90
             && grid[y][x] == 'b'
-            && grid[y - 1][x] == 'b'
-            && grid[y + 1][x] == 'b'
-            && grid[y][x + 1] == 'b') {
+            && grid[y - 1][x]     == 'b'
+            && grid[y + 1][x]     == 'b'
+            && grid[y - 1][x + 1] == 'b') {
             x -= dirX;
             y -= dirY;
             return true;
         } else if (rotation == 180
             && grid[y][x] == 'b'
-            && grid[y + 1][x] == 'b'
-            && grid[y][x - 1] == 'b'
-            && grid[y][x + 1] == 'b') {
+            && grid[y][x - 1]     == 'b'
+            && grid[y][x + 1]     == 'b'
+            && grid[y + 1][x + 1] == 'b') {
             x -= dirX;
             y -= dirY;
             return true;
         } else if (rotation == 270
             && grid[y][x] == 'b'
-            && grid[y - 1][x] == 'b'
-            && grid[y + 1][x] == 'b'
-            && grid[y][x - 1] == 'b') {
+            && grid[y - 1][x]     == 'b'
+            && grid[y + 1][x]     == 'b'
+            && grid[y + 1][x - 1] == 'b') {
             x -= dirX;
             y -= dirY;
             return true;
@@ -141,32 +154,32 @@ public class TPiece extends Block {
     }
 
     private char[][] drawErase(char[][] grid, boolean isColored) {
-        char draw = (isColored) ? 't' : 'b';
+        char draw = (isColored) ? 'j' : 'b';
 
         switch (rotation) {
             case 0 -> {
                 grid[y][x] = draw;
-                grid[y - 1][x] = draw;
-                grid[y][x - 1] = draw;
-                grid[y][x + 1] = draw;
+                grid[y][x - 1]      = draw;
+                grid[y][x + 1]      = draw;
+                grid[y - 1][x - 1]  = draw;
             }
             case 90 -> {
                 grid[y][x] = draw;
-                grid[y - 1][x] = draw;
-                grid[y + 1][x] = draw;
-                grid[y][x + 1] = draw;
+                grid[y - 1][x]      = draw;
+                grid[y + 1][x]      = draw;
+                grid[y - 1][x + 1]  = draw;
             }
             case 180 -> {
                 grid[y][x] = draw;
-                grid[y + 1][x] = draw;
-                grid[y][x - 1] = draw;
-                grid[y][x + 1] = draw;
+                grid[y][x - 1]      = draw;
+                grid[y][x + 1]      = draw;
+                grid[y + 1][x + 1]  = draw;
             }
             case 270 -> {
                 grid[y][x] = draw;
-                grid[y - 1][x] = draw;
-                grid[y + 1][x] = draw;
-                grid[y][x - 1] = draw;
+                grid[y - 1][x]      = draw;
+                grid[y + 1][x]      = draw;
+                grid[y + 1][x - 1]  = draw;
             }
             default -> {
             }

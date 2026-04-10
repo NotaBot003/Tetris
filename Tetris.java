@@ -3,25 +3,14 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferStrategy;
-import javax.swing.JFrame;
-
-// Handle key presses
+import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-// Loading images
-import java.awt.Image;
-import javax.imageio.ImageIO;
-
-// Loading files
+import java.awt.image.BufferStrategy;
 import java.io.File;
-
-// Storing images
 import java.util.HashMap;
-
-// Drawing fonts
-import java.awt.Font;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 
 public class Tetris {
@@ -96,6 +85,7 @@ public class Tetris {
                 if (code == KeyEvent.VK_Q)     onQPressed();
                 if (code == KeyEvent.VK_R)     onRPressed();
                 if (code == KeyEvent.VK_SPACE) onSpacePressed();
+                if (code == KeyEvent.VK_SHIFT) onShiftPressed();
             }
 
             @Override
@@ -182,7 +172,7 @@ public class Tetris {
         for (int i = 0; i < 6; i++) {
             q.step();
         }
-        piece = new TPiece();
+        piece = new IPiece();
         grid = piece.getGrid(grid);
     }
 
@@ -209,7 +199,10 @@ public class Tetris {
 
     }
 
-    // you may add helper methods below
+    public static void newPiece() {
+        piece = new IPiece();
+        grid = piece.getGrid(grid);
+    }
     
     
 
@@ -239,15 +232,17 @@ public class Tetris {
                 String currentSquare;
 
                 currentSquare = switch (grid[i][j]) {
-                    case 'r' -> "Red48";
-                    case 'p' -> "Purple48";
+                    case 'z' -> "Red48";
+                    case 't' -> "Purple48";
                     case 'b' -> "Black48";
+                    case 'j' -> "Blue48";
+                    case 'i' -> "Cyan48";
                     default -> "none";
                 };
 
                 squareSize = 48;
                 if (!currentSquare.equals("none") && !(currentSquare.equals("Black48") && i == 0)) {
-                    g.drawImage(images.get(currentSquare), j * squareSize + (WIDTH / 2 - squareSize * 6), i * squareSize + 25, null);
+                    g.drawImage(images.get(currentSquare), j * squareSize + (WIDTH / 2 - squareSize * 6), i * squareSize, null);
                 }
             }
         }
@@ -278,7 +273,7 @@ public class Tetris {
 
     public static void onUpPressed() {
         if (upAllowed) {
-            piece.rotateClockwise(grid);
+            piece.rotateCounterClockwise(grid);
         }
         upAllowed = false;
     }
@@ -299,6 +294,11 @@ public class Tetris {
 
     public static void onSpacePressed() {
         movement("HD");
+        newPiece();
+    }
+
+    public static void onShiftPressed() {
+        movement("HD");
     }
 
     public static void onEnterPressed() {
@@ -315,12 +315,12 @@ public class Tetris {
         } else if (direction.equals("HD")) {
             grid = piece.hardDrop(grid);
         }
-        for (int i = 0; i < 22; i++) {
-            for (int j = 0; j < 12; j++) {
-                System.out.print(grid[i][j]);
-            }   
-            System.out.println("here");
-        }
+        // for (int i = 0; i < 22; i++) {
+        //     for (int j = 0; j < 12; j++) {
+        //         System.out.print(grid[i][j]);
+        //     }   
+        //     System.out.println("here");
+        // }
     }
 
 ///////////////////////////// GAME CLEAN UP //////////////////////////
